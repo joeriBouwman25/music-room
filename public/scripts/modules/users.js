@@ -1,8 +1,9 @@
+
 let users = []
 
-export const newUser = (user, socket) => {
+export const newUser = (userName, socket) => {
   users.push({
-    username: user,
+    username: userName,
     score: 0,
     id: socket.id
 })
@@ -18,6 +19,7 @@ export const newUser = (user, socket) => {
 // } else {
 //     io.emit('new user', (users))
 // }
+return users
 }
 
 export const removeUser = (userName, socket) => {
