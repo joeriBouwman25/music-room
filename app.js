@@ -15,7 +15,6 @@ const app = express()
 const port = process.env.PORT || 8000
 const server = createServer(app)
 export const io = new Server(server)
-
 app
   .engine('.hbs', engine({ extname: '.hbs' }))
   .set('view engine', '.hbs')
