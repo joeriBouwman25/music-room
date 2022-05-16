@@ -21,31 +21,33 @@ const io = new Server(server)
 let users =[]
 
 io.on('connection', (socket) => {
-    socket.on('new client', async (user) => {
-      // newUser(user, socket)
-      users.push({
-        username: user,
-        score: 0,
-        id: socket.id
-    })
+    socket.on('new client', async (userName) => {
+      const myProfile = users.find((profile) => profile.username.includes(userName))
+      if(!myProfile)
+        users.push({
+          username: userName,
+          score: 0,
+          id: socket.id
+      })
 
-    if (users.length >= 2) {
-      const album = await getAlbumToStartGame()
-      io.emit('game start', album)
-  // io.emit('new client', (users))
+    // if (users.length >= 2) {
+    //   const album = await getAlbumToStartGame()
+    //   io.emit('game start', album)
+    //   io.emit('new client', (users))
 
-    } else {
-        io.emit('new client', (users))
-    }
+    // } else {
+    //     io.emit('new client', (users))
+    // }
       io.emit('new client', (users))
     })
    
-    socket.on('game start', (data) => {
-
+    socket.on('new album', async () => {
+      const album = await getAlbumToStartGame()
+      io.emit('game start', album)
     })
   
     socket.on('chat message', (data) => {
-      socket.emit('chat message', data)
+      io.emit('chat message', data)
     })
   
     socket.on('disconnecting', (user) => {

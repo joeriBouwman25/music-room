@@ -4,4 +4,3 @@ export const getRandom = (item) => {
   return randomItem
 }
 
-// const newStr = randomAlbum.name.replace(/ *\([^)]*\) */g, '')

@@ -2,6 +2,7 @@
 let users = []
 
 export const newUser = (userName, socket) => {
+
   users.push({
     username: userName,
     score: 0,

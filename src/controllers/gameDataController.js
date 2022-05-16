@@ -5,6 +5,10 @@ export const getAlbumToStartGame = async () => {
     const genres = await genreController.getGenres()
     const randomGenre = genreController.getRandomGenre(genres)
     const albums = await albumController.getAlbums(randomGenre)
-    const randomAlbumCover = await albumController.getRandomAlbumCover(albums)
-    return randomAlbumCover
+    const randomAlbum = await albumController.getRandomAlbumCover(albums)
+    const album = {
+        name: randomAlbum.name,
+        cover: randomAlbum.image[3]
+    }
+    return album
 }
