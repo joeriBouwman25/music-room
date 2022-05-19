@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/joeriBouwman25/real-time-web-2122#readme",
   "dependencies": {
+    "canvas-confetti": "^1.5.1",
     "compression": "^1.7.4",
     "cors": "^2.8.5",
     "dotenv": "^16.0.1",

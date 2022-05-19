@@ -9,8 +9,8 @@ export const getGenres = async () => {
 
 export const getRandomGenre = (genres) => {
   let randomGenre = getRandom(genres)
-  if(randomGenre === 'Hip_Hop_Rap' || randomGenre === 'R_B_Soul' ) {
+  if (randomGenre === 'Hip_Hop_Rap' || randomGenre === 'R_B_Soul') {
     randomGenre = 'pop'
-  } 
+  }
   return randomGenre
 }

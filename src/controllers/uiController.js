@@ -9,4 +9,3 @@ export const renderIndex = async (req, res) => {
     userName
   })
 }
-
