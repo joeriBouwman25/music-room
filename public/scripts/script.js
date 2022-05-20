@@ -7,12 +7,11 @@ const loginInput = document.querySelector('.login form input')
 const guessForm = document.querySelector('.index form')
 const guessInput = document.querySelector('.index form input')
 const usersInGame = document.querySelector('.login h2 span')
-const ul = document.querySelector('.index section:nth-of-type(2) ul')
+const ul = document.querySelector('.index section:first-of-type ul')
 const user = document.querySelector('header > h2')
 const albumDiv = document.querySelector('section div')
-const albumCover = document.querySelector('img')
-const timer = document.querySelector('.index section:first-of-type h2 span')
-const playerList = document.querySelector('.index section:nth-of-type(3) ul')
+const attempts = document.querySelector('.index > h2 span')
+const playerList = document.querySelector('.index section:nth-of-type(2) ul')
 
 if (user) {
   const userName = user.innerText
@@ -21,7 +20,7 @@ if (user) {
 
 socket.on('clients', async (data) => {
   if (loginForm) {
-    usersInGame.innerText = `${data.length}/10`
+    usersInGame.innerText = data.length
     loginForm.addEventListener('submit', (e) => {
       data.forEach(user => {
         if (user.username === loginInput.value) {
@@ -33,11 +32,11 @@ socket.on('clients', async (data) => {
     })
   }
   if (playerList) {
-    const li = document.querySelectorAll('section:nth-of-type(3) li')
+    const li = document.querySelectorAll('section:nth-of-type(2) li')
     li.forEach(item => item.remove())
     data.forEach(user => {
       const playerLi = document.createElement('li')
-      const playerName = document.createTextNode(user.username)
+      const playerName = document.createTextNode(user.username + ': ' + user.score)
       playerLi.appendChild(playerName)
       playerList.appendChild(playerLi)
     })
@@ -50,12 +49,18 @@ const albumInfo = {
 }
 
 socket.on('new album', (data) => {
+  const albumCover = document.querySelector('img')
+  if (albumCover) {
+    albumCover.remove()
+  }
+  const albumElement = document.createElement('img')
   const albumCoverUrl = data.cover['#text']
   const simplifiedName = data.name.replace(/ *\([^)]*\) */g, '')
   albumInfo.name = simplifiedName.toLowerCase()
   albumInfo.artist = data.artist.toLowerCase()
-  albumCover.src = albumCoverUrl
-  albumCover.classList.add('blurry')
+  albumElement.src = albumCoverUrl
+  albumElement.classList.add('blurry')
+  albumDiv.appendChild(albumElement)
 
   console.log(albumInfo)
 })
@@ -64,29 +69,29 @@ socket.on('game start', () => {
   socket.emit('game start')
 })
 
-socket.on('timer', (timeLeft) => {
-  timer.innerText = timeLeft
-})
-
-socket.on('20 seconds', () => {
+socket.on('2 mistakes', () => {
+  const albumCover = document.querySelector('img')
   albumCover.classList.remove('blurry')
   albumCover.classList.add('lessBlurry')
 })
 
-socket.on('10 seconds', () => {
+socket.on('4 mistakes', () => {
+  const albumCover = document.querySelector('img')
   albumCover.classList.remove('lessBlurry')
   albumCover.classList.add('moreVisible')
 })
 
-socket.on('time over', (data) => {
+socket.on('6 mistakes', (counter) => {
+  const albumCover = document.querySelector('img')
   albumCover.classList.remove('moreVisible')
   albumCover.classList.add('blurry')
+  attempts.innerText = 6
 })
 
 if (guessForm) {
   guessForm.addEventListener('submit', (e) => {
     socket.emit('chat message', {
-      value: guessInput.value,
+      value: guessInput.value.toLowerCase(),
       user: user.innerText,
       album: albumInfo
     })
@@ -100,11 +105,14 @@ socket.on('chat message', (data) => {
 })
 
 socket.on('correct', () => {
-  // eslint-disable-next-line no-undef
-  confetti()
+  if (guessForm) {
+    // eslint-disable-next-line no-undef
+    confetti()
+  }
 })
 
-socket.on('wrong', () => {
+socket.on('wrong', (counter) => {
+  attempts.innerText = counter
   albumDiv.classList.add('wrong')
   const removeAnimationClass = () => {
     albumDiv.classList.remove('wrong')
@@ -115,8 +123,8 @@ socket.on('wrong', () => {
 const displayMessage = (data) => {
   const li = document.createElement('li')
   li.innerHTML = `
-  <span>${data.user}:</span>
-  <span>${data.value}</span>
+  <p><span>${data.user}:</span></p>
+  <p>${data.value}</p>
   `
   if (user.innerText === data.user) {
     li.className = 'outgoing'
@@ -126,5 +134,5 @@ const displayMessage = (data) => {
   ul.appendChild(li)
 
   // scroll to the bottom
-  ul.scrollTo(0, document.body.scrollHeight)
+  ul.scrollTo(0, document.body.scrollHeight + 3)
 }

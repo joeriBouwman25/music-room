@@ -41,15 +41,29 @@ io.on('connection', (socket) => {
       io.emit('clients', users)
     }
   })
-
+  let counter = 6
   socket.on('chat message', (data) => {
     console.log(data.album.name)
     io.emit('chat message', data)
     if (data.value === data.album.name || data.value === data.album.artist) {
+      const correctUser = users.find(user => user.username.includes(data.user))
+      correctUser.score += 10
       io.emit('correct')
+      io.emit('clients', users)
+      counter = 6
       getAlbumToStartGame()
     } else {
-      io.emit('wrong')
+      counter--
+      io.emit('wrong', counter)
+    }
+    if (counter === 4) {
+      io.emit('2 mistakes')
+    } else if (counter === 2) {
+      io.emit('4 mistakes')
+    } else if (counter === 0) {
+      io.emit('6 mistakes')
+      counter = 6
+      getAlbumToStartGame()
     }
   })
 
