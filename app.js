@@ -19,7 +19,7 @@ const port = process.env.PORT || 8000
 const server = createServer(app)
 export const io = new Server(server)
 
-const users = []
+let users = []
 
 io.on('connection', (socket) => {
   io.emit('clients', users)
@@ -34,6 +34,7 @@ io.on('connection', (socket) => {
     }
     if (users.length >= 2) {
       getAlbumToStartGame()
+      io.emit('start game')
       io.emit('new client', (users))
       io.emit('clients', users)
     } else {
@@ -48,9 +49,9 @@ io.on('connection', (socket) => {
     if (data.value === data.album.name || data.value === data.album.artist) {
       const correctUser = users.find(user => user.username.includes(data.user))
       correctUser.score += 10
-      io.emit('correct')
-      io.emit('clients', users)
       counter = 6
+      io.emit('correct', counter)
+      io.emit('clients', users)
       getAlbumToStartGame()
     } else {
       counter--
@@ -68,13 +69,16 @@ io.on('connection', (socket) => {
   })
 
   socket.on('disconnect', () => {
-    console.log(socket.id)
     const userLeft = users.filter(user => user.id === socket.id)
     if (userLeft.length !== 0) {
       console.log(userLeft[0].username + ' left')
     }
     const remainingUsers = users.filter(user => user.id !== socket.id)
-    io.emit('clients', remainingUsers)
+    users = remainingUsers
+    io.emit('clients', users)
+    if (remainingUsers.length <= 1) {
+      io.emit('pause game')
+    }
   })
 })
 
