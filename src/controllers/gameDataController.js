@@ -14,29 +14,30 @@ export const getAlbumToStartGame = async () => {
   }
   io.emit('new album', album)
 }
-let timeLeft = 30
 
-export const startTimerForGame = async () => {
-  timeLeft -= 1
-  io.emit('timer', timeLeft)
-  if (timeLeft === 20) {
-    io.emit('20seconds')
-  } else if (timeLeft === 10) {
-    io.emit('10 seconds')
-  } else if (timeLeft < 1) {
-    // io.emit('time over', album)
-    await getAlbumToStartGame()
-    stopTimer()
-  }
-}
+// let timeLeft = 30
 
-let countdown
+// export const startTimerForGame = async () => {
+//   timeLeft -= 1
+//   io.emit('timer', timeLeft)
+//   if (timeLeft === 20) {
+//     io.emit('20seconds')
+//   } else if (timeLeft === 10) {
+//     io.emit('10 seconds')
+//   } else if (timeLeft < 1) {
+//     // io.emit('time over', album)
+//     await getAlbumToStartGame()
+//     stopTimer()
+//   }
+// }
 
-export const startTimer = () => {
-  countdown = setInterval(startTimerForGame, 1000)
-}
+// let countdown
 
-export const stopTimer = () => {
-  clearInterval(countdown)
-  startTimer()
-}
+// export const startTimer = () => {
+//   countdown = setInterval(startTimerForGame, 1000)
+// }
+
+// export const stopTimer = () => {
+//   clearInterval(countdown)
+//   startTimer()
+// }

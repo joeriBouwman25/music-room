@@ -1,4 +1,4 @@
-
+/* eslint-disable no-undef */
 // eslint-disable-next-line no-undef
 const socket = io()
 
@@ -14,10 +14,23 @@ const attemptsH2 = document.querySelector('.index > h2')
 const attempts = document.querySelector('.index > h2 span')
 const playerList = document.querySelector('.index section:nth-of-type(2) ul')
 const h3 = document.querySelector('.login h3')
+const winner = document.querySelector('.winner')
 
 if (user) {
   const userName = user.innerText
   socket.emit('new client', userName)
+}
+
+if (winner) {
+  let angle = 0
+  setInterval(() => {
+    angle += 45
+    confetti({
+      particleCount: 200,
+      spread: 100,
+      angle: angle
+    })
+  }, 500)
 }
 
 socket.on('clients', async (data) => {
@@ -68,10 +81,12 @@ socket.on('start game', () => {
 socket.on('pause game', () => {
   const h2 = document.querySelector('.index section:first-of-type > h2')
   const loader = document.getElementById('loader')
-  h2.classList.remove('hide')
-  loader.classList.remove('hide')
-  attemptsH2.classList.add('hide')
-  guessForm.classList.add('hide')
+  if (h2 || loader) {
+    h2.classList.remove('hide')
+    loader.classList.remove('hide')
+    attemptsH2.classList.add('hide')
+    guessForm.classList.add('hide')
+  }
 })
 
 socket.on('new album', (data) => {
@@ -86,8 +101,10 @@ socket.on('new album', (data) => {
   albumInfo.artist = data.artist.toLowerCase()
   albumElement.src = albumCoverUrl
   albumElement.classList.add('blurry')
-  albumDiv.appendChild(albumElement)
-  console.log(albumInfo)
+  if (albumDiv) {
+    albumDiv.appendChild(albumElement)
+    console.log(albumInfo)
+  }
 })
 
 socket.on('2 mistakes', () => {
@@ -122,15 +139,19 @@ if (guessForm) {
 }
 
 socket.on('chat message', (data) => {
+  console.log(window.location)
   displayMessage(data)
 })
 
 socket.on('correct', (counter) => {
   if (guessForm) {
-    // eslint-disable-next-line no-undef
     confetti()
     attempts.innerText = counter
   }
+})
+
+socket.on('winner', (winner) => {
+  window.location.pathname = `/winner/${winner.username}`
 })
 
 socket.on('wrong', (counter) => {

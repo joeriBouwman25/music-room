@@ -49,6 +49,9 @@ io.on('connection', (socket) => {
     if (data.value === data.album.name || data.value === data.album.artist) {
       const correctUser = users.find(user => user.username.includes(data.user))
       correctUser.score += 10
+      if (correctUser.score === 60) {
+        io.emit('winner', correctUser)
+      }
       counter = 6
       io.emit('correct', counter)
       io.emit('clients', users)
@@ -66,6 +69,10 @@ io.on('connection', (socket) => {
       counter = 6
       getAlbumToStartGame()
     }
+  })
+
+  socket.on('winner', () => {
+    io.emit('winner')
   })
 
   socket.on('disconnect', () => {

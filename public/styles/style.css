@@ -277,6 +277,47 @@ header > img {
   color: #d51007;
 }
 
+/*/////////////////////////*/
+/*/////////////////////////*/
+/*////// WINNER PAGE //////*/
+/*/////////////////////////*/
+/*/////////////////////////*/
+
+.winner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  height: 100%;
+}
+
+.winner section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(50% - 3em);
+}
+
+.winner h1 {
+  color: #fff;
+}
+
+.winner h2 {
+  color: #d51007;
+}
+
+.winner button {
+  margin-top: 5em;
+}
+
+.winner button a {
+  color: #fff;
+  text-decoration: none;
+}
+
 .blurry {
   filter: blur(3px);
 }

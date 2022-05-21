@@ -9,3 +9,10 @@ export const renderIndex = async (req, res) => {
     userName
   })
 }
+
+export const renderWinner = (req, res) => {
+  const winner = req.params.winnerName
+  res.render('winner', {
+    winner
+  })
+}
