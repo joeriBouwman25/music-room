@@ -139,7 +139,6 @@ if (guessForm) {
 }
 
 socket.on('chat message', (data) => {
-  console.log(window.location)
   displayMessage(data)
 })
 
