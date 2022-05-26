@@ -3,6 +3,7 @@ import { getRandom } from './randomDataController.js'
 
 export const getGenres = async () => {
   const allGenres = musicGenres.getAllGenres()
+  console.log(allGenres)
   const genres = Object.keys(allGenres)
   return genres
 }
