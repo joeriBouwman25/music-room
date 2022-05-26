@@ -222,7 +222,7 @@ Het _"winner"_ event wordt aangeroepen wanneer
 
 Het _"disconnection"_ event wordt aangeroepen wanneer
 
-## :heavy_check_mark: Features
+<!-- ## :heavy_check_mark: Features
 
 - Play a game with other players
 - Set a nickname
@@ -293,4 +293,4 @@ Your efforts will be graded using a single point rubric (see below). You will ha
 
 ## :bookmark: License
 
-[MIT](https://github.com/lottekoblens/real-time-web-2122/blob/main/LICENSE)
+[MIT](https://github.com/lottekoblens/real-time-web-2122/blob/main/LICENSE) -->
