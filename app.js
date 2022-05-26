@@ -23,6 +23,8 @@ let users = []
 
 io.on('connection', (socket) => {
   io.emit('clients', users)
+  let counter = 6
+
   socket.on('new client', (userName) => {
     const myProfile = users.forEach(user => user.username.includes(userName))
     if (!myProfile) {
@@ -35,14 +37,12 @@ io.on('connection', (socket) => {
     if (users.length >= 2) {
       getAlbumToStartGame()
       io.emit('start game')
-      io.emit('new client', (users))
       io.emit('clients', users)
     } else {
-      io.emit('new client', (users))
       io.emit('clients', users)
     }
   })
-  let counter = 6
+
   socket.on('chat message', (data) => {
     console.log(data.album.name)
     io.emit('chat message', data)

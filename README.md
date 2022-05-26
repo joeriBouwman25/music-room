@@ -11,8 +11,8 @@ Een multiplayer mini game waarbij je als eerste de naam of artiest bij een rando
   - [:computer: Live demo](#computer-live-demo)
   - [:bulb: Concept](#bulb-concept)
   - [:floppy_disk: External data source](#floppy_disk-external-data-source)
-    - [The movieDB API](#the-moviedb-api)
-    - [Data modelling](#data-modelling)
+    - [Music-genre API](#Music-genre-API)
+    - [Last-FM API](#Last-FM-API)
   - [Proof of concept 2: spike solution](#proof-of-concept-2-spike-solution)
   - [:file_folder: Data lifecycle](#file_folder-data-lifecycle)
   - [:file_folder: Data management](#file_folder-data-management)
@@ -38,16 +38,9 @@ Een multiplayer mini game waarbij je als eerste de naam of artiest bij een rando
 
 ## :bulb: Concept
 
-At first we had to think of multiple concepts and made some scetches as you can see below.
+Om tot één concept te komen ben ik begonnen met het schetsen van meerdere ideeën:
 
-<img src="/public/images/Schets1.jpg" width="600">
-<img src="/public/images/Schets2.jpg" width="600">
-<img src="/public/images/Schets3.jpg" width="600">
-
-Then I decided that I wanted to keep working on concept two. I want people to guess which movie it is based on an image.
-The user can guess by typing in the right answer in the chat. The person who guesses it first gets the points.
-
-<img src="/public/images/concept.jpg" width="650">
+Uit de schetsen haalde ik drie mogelijke concepten
 
 ## :floppy_disk: External data source
 
@@ -63,13 +56,11 @@ De eerste API die ik gebruik is een _music-genre_ API. Met deze API haal ik een 
 Om de lijst met genres op te vragen van de API gebruik ik de NPM package _music-genres_ met de volgende functie:
 
 ```js
-
 export const getGenres = async () => {
-  const allGenres = musicGenres.getAllGenres()
-  const genres = Object.keys(allGenres)
-  return genres
-}
-
+  const allGenres = musicGenres.getAllGenres();
+  const genres = Object.keys(allGenres);
+  return genres;
+};
 ```
 
 De lijst die je terug krijgt is een Object met 13 keys voor genres, per genre is er een array met subgenres:
@@ -95,35 +86,34 @@ Met een random functie haal ik 1 genre op uit het Object.
 ### [Last-FM API](https://www.last.fm/api)
 
 Met de Last-FM API is het mogelijk om data over artiesten, albums en nummers op te halen, per categorie kun je weer op _tags_ zoeken, deze tags zijn het genre die bij de categorie hoort. De API heeft geen endpoint om alle soorten tags op te halen, vandaar dat ik een andere API gebruik om toch genres te krijgen.
+Met de tag haal ik een lijst met top 100 albums bij de desbetreffende tag, uit deze lijst haal ik weer één random album waar ik de info van gebruik.
 De volgende functies gebruik ik om een uiteindelijk een random album op te halen van Last-FM en hier van de albumhoes, naam en artiest te emitten van de server naar de client:
 
 ```js
-
 export const getAlbums = async (genre) => {
-  const key = process.env.KEY
-  const url = `http://ws.audioscrobbler.com/2.0/?method=tag.gettopalbums&tag=${genre}&api_key=${key}&format=json`
-  const res = await fetch(url)
-  const data = await res.json()
-  const albums = data.albums.album
-  return albums
-}
+  const key = process.env.KEY;
+  const url = `http://ws.audioscrobbler.com/2.0/?method=tag.gettopalbums&tag=${genre}&api_key=${key}&format=json`;
+  const res = await fetch(url);
+  const data = await res.json();
+  const albums = data.albums.album;
+  return albums;
+};
 
 export const getAlbumToStartGame = async () => {
-  const genres = await genreController.getGenres()
-  const randomGenre = genreController.getRandomGenre(genres)
-  const albums = await albumController.getAlbums(randomGenre)
-  const randomAlbum = await albumController.getRandomAlbumCover(albums)
+  const genres = await genreController.getGenres();
+  const randomGenre = genreController.getRandomGenre(genres);
+  const albums = await albumController.getAlbums(randomGenre);
+  const randomAlbum = await albumController.getRandomAlbumCover(albums);
   const album = {
     name: randomAlbum.name,
     artist: randomAlbum.artist.name,
-    cover: randomAlbum.image[3]
-  }
-  io.emit('new album', album)
-}
-
+    cover: randomAlbum.image[3],
+  };
+  io.emit("new album", album);
+};
 ```
 
-### Data modelling
+<!-- ### Data modelling
 
 <img src="/public/images/datamodelling.png" width="650">
 
@@ -153,63 +143,84 @@ users.push({
 
 I also save the data of the movies. I first filter the data of the movies by only getting the movies with English as the original language. I also deleted the properties that I don't use, so I have good cleaned data that I can use.
 
-```js
-let data = [];
-
-// fetch
-await fetch(urlOne)
-  .then((res) => res.json())
-  .then((dataPage) => {
-    dataOne = dataPage.results;
-    const filteredDataThree = dataThree.filter(
-      (movie) => movie.original_language === "en"
-    );
-    const newDataThree = filteredDataThree.map((movie) => {
-      return {
-        title: movie.original_title,
-        backdrop_path: movie.backdrop_path,
-        overview: movie.overview,
-      };
-    });
-  })
-  .catch((err) => {
-    console.log(err);
-  });
-```
-
 ## :busts_in_silhouette: Multi-user support
 
-In socket.io you as a user are already assigned a socket ID. Once the user gets to the site, he sets up a nickname. All users then end up in room (there are not multiple rooms). So all users end up in a game together. All users will be notified when a new user is added, all users will receive all messages sent in the chat and all users see the scoreboard.
+In socket.io you as a user are already assigned a socket ID. Once the user gets to the site, he sets up a nickname. All users then end up in room (there are not multiple rooms). So all users end up in a game together. All users will be notified when a new user is added, all users will receive all messages sent in the chat and all users see the scoreboard. -->
 
 ## :globe_with_meridians: Real time events
 
 ### Connection
 
-The connection event will be called when a new user connects to the server. All the other events are stored in this event.
+Het io _"connection"_ event is als het ware het "hoofd event", deze wordt uitgevoerd wanneer er een client een connectie maakt met de server, alle logica voor andere events staat binnen in het connection event:
 
-### Userconnect
+```js
+io.on("connection", (socket) => {
+  io.emit("clients", users);
+  // etc..
+});
+```
 
-The userconnect event is called when a new user connects to the server and filled in a user name on the first page. The user will be added to an array and is given a id (socket id), nickname and score (the score will be 0 in the beginning)
+### Clients
 
-### Chat-message
+Het _"clients"_ event wordt aangeroepen direct wanneer de socket verbinding is gemaakt. Vanaf de server wordt een lijst met alle users die op dat moment verbonden zijn ge-emit naar de client, dit wordt gedaan om het aantal gebruikers dat op dat moment in de app zitten weer te geven. Wanneer er 10 gebruikers in de app zitten kan er niemand meer bij. Ook zijn er minimaal twee gebruikers nodig voordat het spel kan starten.
+Ook wanneer een gebruiker de room verlaat wordt dit event ge-emit om zo de gebruikers in de room up to date te houden.
+Wanneer een album juist wordt geraden wordt dit event ge-emit om de score van de gebruikers te updaten.
 
-The chat-message event is called multiple times:
+_"clients"_ wordt vanaf de server naar de client ge-emit.
 
-- When a user sends a chat message: the user sends a message and this will be displayed at all users
-- When a user joins the game: There will be a message in the chat that a user has connected
-- When a user guessed the right movie: The 'computer' sends a message that a user guessed the movie
+### New Client
 
-### Scoreboard
+Het _"new client"_ event wordt aangeroepen wanneer een gebruiker een username heeft ingevuld en gesubmit.
+Met dit event worden de gebruikers gegevens opgeslagen als een object in een array.
+
+```js
+const myProfile = users.forEach((user) => user.username.includes(userName));
+if (!myProfile) {
+  users.push({
+    username: userName,
+    score: 0,
+    id: socket.id,
+  });
+}
+```
+
+Het event wordt vanaf de clientside naar de server ge-emit.
+
+### Start game
+
+Het _"start game"_ event wordt aangeroepen wanneer er meer dan twee gebruikers in de room zitten. Met dit event wordt het laad scherm verborgen en het eerste album weergegeven. Het event wordt ge-emit van de server naar de client.
+
+### Pause game
+
+Het _"pause game"_ event wordt aangeroepen wanneer een gebruiker de room verlaat en er vervolgens minder dan twee gebruikers overblijven in de room. Het event zorgt er voor dat het laad scherm weer geactiveert wordt en het spel dus op pauze wordt gezet. Het event wordt ge-emit van de server naar de client.
+
+### Chat message
+
+Het _"chat message"_ event wordt aangeroepen wanneer
+
+### Correct
+
+Het _"correct"_ event wordt aangeroepen wanneer
 
 This event is called when a user sends the right answer in the chat. And the user who gave the right answer will get points which will be displayed on the scoreboard.
 
-### Skip-movie
+### Wrong
+
+Het _"wrong"_ event wordt aangeroepen wanneer
+
+### 2/4/6 Mistakes
+
+Het _"2 mistakes"_ event wordt aangeroepen wanneer
 
 The skip-movie event is called when the user clicks on the button. This adds one to game so that the next movie will be displayed.
 
-### Disconnect
+### Winner
 
-When a user disconnects a message will be send that the user is disconnected.
+Het _"winner"_ event wordt aangeroepen wanneer
+
+### Disconnection
+
+Het _"disconnection"_ event wordt aangeroepen wanneer
 
 ## :heavy_check_mark: Features
 
