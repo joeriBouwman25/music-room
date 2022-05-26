@@ -62,7 +62,7 @@ De eerste API die ik gebruik is een _music-genre_ API. Met deze API haal ik een 
 
 Om de lijst met genres op te vragen van de API gebruik ik de NPM package _music-genres_ met de volgende functie:
 
-```
+```js
 
 export const getGenres = async () => {
   const allGenres = musicGenres.getAllGenres()
@@ -74,7 +74,7 @@ export const getGenres = async () => {
 
 De lijst die je terug krijgt is een Object met 13 keys voor genres, per genre is er een array met subgenres:
 
-```
+```Js
 {
  Blues: [
     'Acoustic Blues',
@@ -97,7 +97,7 @@ Met een random functie haal ik 1 genre op uit het Object.
 Met de Last-FM API is het mogelijk om data over artiesten, albums en nummers op te halen, per categorie kun je weer op _tags_ zoeken, deze tags zijn het genre die bij de categorie hoort. De API heeft geen endpoint om alle soorten tags op te halen, vandaar dat ik een andere API gebruik om toch genres te krijgen.
 De volgende functies gebruik ik om een uiteindelijk een random album op te halen van Last-FM en hier van de albumhoes, naam en artiest te emitten van de server naar de client:
 
-```
+```js
 
 export const getAlbums = async (genre) => {
   const key = process.env.KEY
