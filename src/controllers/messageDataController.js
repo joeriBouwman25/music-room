@@ -2,18 +2,6 @@ import { getAlbumToStartGame, mistakeCount } from './gameDataController.js'
 
 let counter = 6
 
-if (guessForm) {
-  guessForm.addEventListener('submit', (e) => {
-    socket.emit('chat message', {
-      value: guessInput.value.toLowerCase(),
-      user: user.innerText,
-      album: albumInfo
-    })
-    e.preventDefault()
-    guessInput.value = ''
-  })
-}
-
 export const checkAnswer = (data, users) => {
   if (data.value === data.album.name || data.value === data.album.artist) {
     const correctUser = users.find(user => user.username.includes(data.user))
