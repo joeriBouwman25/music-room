@@ -140,7 +140,7 @@ export const getAlbumToStartGame = async () => {
 
 To explain the application in a visual way, I created a data lifecycle. Here you can see what happens on what time of after an event.
 
-<img src="/assets/data%20life%20cycle.png" alt="data life cycle" width="700"/>
+<img src="/assets/data-life%-cycle.png" alt="data life cycle" width="700"/>
 
 ## Data management
 
