@@ -1,42 +1,42 @@
-# :computer: Real Time Web - Music Room
+# Real Time Web - Music Room
 
 Een multiplayer mini game waarbij je als eerste de naam of artiest bij een random albumhoes moet raden
 
-![screenshot van de homepagina](/assets/main%20screen.png)
+<!-- ![screenshot van de homepagina](/assets/main%20screen.png) -->
+<img src="/assets/main%20screen.png" alt="screenshot van de homepagina" width="200"/>
 
-## :clipboard: Inhoudsopgave
+## Inhoudsopgave
 
-- [:computer: Real Time Web](#computer-real-time-web-music-room)
-  - [:clipboard: Inhoudsopgave](#clipboard-Inhoudsopgave)
-  - [:computer: Live demo](#computer-live-demo)
-  - [:bulb: Concept](#bulb-concept)
-  - [:floppy_disk: External data source](#floppy_disk-external-data-source)
+- [Real Time Web](#computer-real-time-web-music-room)
+  - [Inhoudsopgave](#clipboard-Inhoudsopgave)
+  - [Live demo](#computer-live-demo)
+  - [Concept](#bulb-concept)
+  - [External data source](#floppy_disk-external-data-source)
     - [Music-genre API](#Music-genre-API)
     - [Last-FM API](#Last-FM-API)
-  - [Proof of concept 2: spike solution](#proof-of-concept-2-spike-solution)
-  - [:file_folder: Data lifecycle](#file_folder-data-lifecycle)
-  - [:file_folder: Data management](#file_folder-data-management)
-  - [:busts_in_silhouette: Multi-user support](#busts_in_silhouette-multi-user-support)
-  - [:globe_with_meridians: Real time events](#globe_with_meridians-real-time-events)
+  - [Data lifecycle](#file_folder-data-lifecycle)
+  - [Data management](#file_folder-data-management)
+  - [Multi-user support](#busts_in_silhouette-multi-user-support)
+  - [Real time events](#globe_with_meridians-real-time-events)
     - [Connection](#connection)
     - [Userconnect](#userconnect)
     - [Chat-message](#chat-message)
     - [Scoreboard](#scoreboard)
     - [Skip-movie](#skip-movie)
     - [Disconnect](#disconnect)
-  - [:heavy_check_mark: Features](#heavy_check_mark-features)
-  - [:wrench: Installation](#wrench-installation)
-  - [:fast_forward: Wishlist](#fast_forward-wishlist)
-  - [:clipboard: Assignment](#clipboard-assignment)
+  - [Features](#heavy_check_mark-features)
+  - [Installation](#wrench-installation)
+  - [Wishlist](#fast_forward-wishlist)
+  - [Assignment](#clipboard-assignment)
     - [Goals](#goals)
     - [Grading](#grading)
-  - [:bookmark: License](#bookmark-license)
+  - [License](#bookmark-license)
 
-## :computer: Live demo
+## Live demo
 
 [Live demo](https://cmd-music-room.herokuapp.com/)
 
-## :bulb: Concept
+## Concept
 
 Om tot één concept te komen ben ik begonnen met het schetsen van meerdere ideeën:
 
@@ -54,7 +54,7 @@ Na een hele hoop worstelen met de API bleek wat ik wou helaas niet mogelijk te z
 
 Voor concept 3 was ik oorspronkelijk van plan om ook de Spotify API gebruiken maar heb dit gewisseld naar de Last-FM API omdat hier geen Oauth login vereist was en er geen limiterende gebruikers rechtten aan de API hingen.
 
-## :floppy_disk: External data source
+## External data source
 
 Om een random album hoes met de applicatie op te kunnen halen gebruik ik twee verschillende API's;
 
@@ -129,11 +129,6 @@ export const getAlbumToStartGame = async () => {
 
 <img src="/public/images/datamodelling.png" width="650">
 
-## Proof of concept 2: spike solution
-
-I started coding and thought about the _spike solution_. This means that I keep the amount of data traffic in mind. I don't want my app to crash because there is too much data traffic.
-
-I could prevent this by, for example, setting a character limit, so that people can't send an endless message that could cause the app to crash.
 
 ## :file_folder: Data lifecycle
 
@@ -141,7 +136,7 @@ To explain the application in a visual way, I created a data lifecycle. Here you
 
 <img src="/public/images/dataLifecycle-version2.png" width="650"> -->
 
-## :file_folder: Data management
+## Data management
 
 Om de data te beheren gebruik ik de array: `users[]`. Per gebruiker wordt er een Object aangemaakt wanneer deze een gebruikersnaam heeft gesubmit, dit Object ziet er als volgt uit:
 
@@ -178,13 +173,15 @@ const album = {
 
 De album data wordt verder niet opgeslagen waardoor er een nieuw album wordt vertoond zodra een van de gebruikers zijn/haar pagina refreshed. Dit had ik graag nog willen oplossen door het album in local storage of database op te slaan maar door tijd gebrek zit dit niet in de applicatie.
 
-## :busts_in_silhouette: Multi-user support
+## Multi-user support
 
-In mijn applicatie wordt niet gebruik gemaakt van meerdere rooms, zodra een gebruiker een gebruikersnaam heeft uitgekozen wordt deze in een algemene room gestopt, hier komen alle gebruikers dus in. Bij het aanmaken van een gebruikersnaam is al te zien hoeveel personen op dat moment al in de room zitten. In de room zelf is het voor gebruikers te zien welke gebruikers er op dat moment mee doen, hoeveel punten elke gebruiker heeft en wanneer een gebruiker de room verlaat.
+In mijn applicatie wordt niet gebruik gemaakt van meerdere rooms, zodra een gebruiker een gebruikersnaam heeft uitgekozen wordt deze in een algemene room gestopt, hier komen alle gebruikers dus in. Bij het aanmaken van een gebruikersnaam is al te zien hoeveel personen op dat moment al in de room zitten.
+
+In de room zelf is het voor gebruikers te zien welke gebruikers er op dat moment mee doen, hoeveel punten elke gebruiker heeft en wanneer een gebruiker de room verlaat. Ook zijn chat berichten voor alle gebruikers te zien en krijgt elke gebruiker dezelfde albumhoes te zien.
 
 Om te voorkomen dat de server overbelast raakt met teveel user input heb ik een limiet van maximaal 10 gebruikers per game sessie ingesteld, zodra de room vol is kunnen nieuwe gebruikers niet joinen. Ook heb ik een limiet van 35 karakters ingesteld op het input veld om de albums te raden, zodat de server niet overbelast raakt met enorme berichten.
 
-## :globe_with_meridians: Real time events
+## Real time events
 
 ### Connection
 
@@ -259,7 +256,7 @@ Het _"winner"_ event wordt aangeroepen wanneer een gebruiker 60 punten heeft ver
 
 Het _"disconnect"_ event wordt aangeroepen wanneer een gebruiker de game verlaat of zijn/haar internet verbinding verliest. De server luisterd dus of een client nog wel verbonden is met de server. Wanneer het event wordt aangeroepen worden de gebruikers geupdate met het _"clients"_ event. Wanneer er minder dan twee gebruikers overblijven na het _"disconnect"_ event zal het _"pause game"_ event worden uitgevoerd.
 
-## :heavy_check_mark: Features
+## Features
 
 - Een spel spelen met andere gebruikers
 - Albums/ Artiesten raden
@@ -267,7 +264,7 @@ Het _"disconnect"_ event wordt aangeroepen wanneer een gebruiker de game verlaat
 - Punten verdienen
 - Een gebruikersnaam kiezen
 
-## :wrench: Installatie
+## Installatie
 
 1. Clone de volgende repository door de onderstaande regel in de terminal in te voeren:
 
