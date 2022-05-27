@@ -157,7 +157,7 @@ Ik heb gebruik de _username_ Key om te checken welke gebruikers er in de game zi
 
 Omdat ik op naam check is het niet mogelijk voor gebruikers om een username te submitten die al in de game zit.
 
-![Gebruikersnaam is al in gebruik](/assets/usernam%20error.png)
+![Gebruikersnaam is al in gebruik](/assets/username%20error.png)
 
 `const users` wordt op de volgende momenten vanaf de server naar de client verstuurd om alle gebruikers up to date te houden:
 
@@ -180,7 +180,9 @@ De album data wordt verder niet opgeslagen waardoor er een nieuw album wordt ver
 
 ## :busts_in_silhouette: Multi-user support
 
-In socket.io you as a user are already assigned a socket ID. Once the user gets to the site, he sets up a nickname. All users then end up in room (there are not multiple rooms). So all users end up in a game together. All users will be notified when a new user is added, all users will receive all messages sent in the chat and all users see the scoreboard.
+In mijn applicatie wordt niet gebruik gemaakt van meerdere rooms, zodra een gebruiker een gebruikersnaam heeft uitgekozen wordt deze in een algemene room gestopt, hier komen alle gebruikers dus in. Bij het aanmaken van een gebruikersnaam is al te zien hoeveel personen op dat moment al in de room zitten. In de room zelf is het voor gebruikers te zien welke gebruikers er op dat moment mee doen, hoeveel punten elke gebruiker heeft en wanneer een gebruiker de room verlaat.
+
+Om te voorkomen dat de server overbelast raakt met teveel user input heb ik een limiet van maximaal 10 gebruikers per game sessie ingesteld, zodra de room vol is kunnen nieuwe gebruikers niet joinen. Ook heb ik een limiet van 35 karakters ingesteld op het input veld om de albums te raden, zodat de server niet overbelast raakt met enorme berichten.
 
 ## :globe_with_meridians: Real time events
 
