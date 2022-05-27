@@ -2,34 +2,40 @@
 
 Een multiplayer mini game waarbij je als eerste de naam of artiest bij een random albumhoes moet raden
 
-<img src="/assets/main%20screen.png" alt="screenshot van de homepagina" width="800"/>
+<img src="/assets/main%20screen.png" alt="screenshot van de homepagina" width="700"/>
 
 ## Inhoudsopgave
 
-- [Real Time Web](#computer-real-time-web-music-room)
-  - [Inhoudsopgave](#clipboard-Inhoudsopgave)
+- [Real Time Web](#real-time-web-music-room)
+  - [Inhoudsopgave](#Inhoudsopgave)
   - [Live demo](#computer-live-demo)
-  - [Concept](#bulb-concept)
-  - [External data source](#floppy_disk-external-data-source)
+  - [Concept](#concept)
+  - [External data source](#external-data-source)
     - [Music-genre API](#Music-genre-API)
     - [Last-FM API](#Last-FM-API)
-  - [Data lifecycle](#file_folder-data-lifecycle)
-  - [Data management](#file_folder-data-management)
-  - [Multi-user support](#busts_in_silhouette-multi-user-support)
-  - [Real time events](#globe_with_meridians-real-time-events)
+  - [Data lifecycle](#data-lifecycle)
+  - [Data management](#data-management)
+  - [Multi-user support](#multi-user-support)
+  - [Real time events](#real-time-events)
     - [Connection](#connection)
-    - [Userconnect](#userconnect)
-    - [Chat-message](#chat-message)
-    - [Scoreboard](#scoreboard)
-    - [Skip-movie](#skip-movie)
+    - [Clients](#clients)
+    - [New client](#new-client)
+    - [Start game](#start-game)
+    - [Pause game](#pause-game)
+    - [Chat message](#hat-message)
+    - [Correct](#correct)
+    - [Wrong](#wrong)
+    - [2/4/6 Mistakes](#2/4/6-mistakes)
+    - [Winner](#winner)
     - [Disconnect](#disconnect)
-  - [Features](#heavy_check_mark-features)
-  - [Installation](#wrench-installation)
-  - [Wishlist](#fast_forward-wishlist)
-  - [Assignment](#clipboard-assignment)
+  - [Features](#features)
+  - [Installation](#installation)
+  - [Wishlist](#wishlist)
+  - [Assignment](#assignment)
     - [Goals](#goals)
     - [Grading](#grading)
-  - [License](#bookmark-license)
+  - [auteur](#auteur)
+  - [License](#icense)
 
 ## Live demo
 
@@ -40,6 +46,8 @@ Een multiplayer mini game waarbij je als eerste de naam of artiest bij een rando
 Om tot één concept te komen ben ik begonnen met het schetsen van meerdere ideeën:
 
 Uit de schetsen haalde ik drie mogelijke concepten:
+
+<img src="/assets/schets 1 + 2.png" alt="schetsen" width="400"/><img src="/assets/schets 3 + 4.png" alt="schetsen" width="400"/><img src="/assets/schets 5 + 6.png" alt="schetsen" width="400"/><img src="/assets/schets 7 + 8.png" alt="schetsen" width="400"/>
 
 1.  Spotify Roulette, een app waarbij gebruikers gezamelijk naar muziek kunnen luisteren en gestemd kan worden of deze in een gezamelijke afspeellijst toegevoegd moet worden. Voor dit concept wordt de Spotify API gebruikt.
 
@@ -288,16 +296,15 @@ Lees [hier](https://www.last.fm/api/authentication) meer over hoe je een API key
 
 `$ npm start`
 
-<!-- ## :fast_forward: Wishlist
+## Wishlist
 
-Due to a lack of time, there are a few things that I wanted to add but I couldn't now
+De volgende functies had ik nog willen uitwerken maar dit is door tijdsgebrek niet gelukt:
 
-- Create rooms
-- When the user message includes a part of the title, give the user feedback that they are close to the right answer.
-- Store data of points from users in database.
-- Give user feedback when the connection can't be made.
+- Gebruik maken van meerdere rooms
+- In plaats van een random genre waaruit een album wordt gehaald de keuze kunnen hebben een genre per room te kiezen
+- Het koppelen van een database zodat gestuurde berichten niet verdwijnen wanneer de app wordt afgesloten
 
-## :clipboard: Assignment
+## Assignment
 
 During this course you will learn how to build a real-time application. You will learn techniques to setup an open connection between the client and the server. This will enable you to send data in real-time both ways, at the same time.
 
@@ -322,6 +329,10 @@ Your efforts will be graded using a single point rubric (see below). You will ha
 |            | _Data management_ The server maintains a data model and each client is continuously updated with the correct data.                                                                                                                                          |             |
 |            | _Multi-user support_ Multiple clients can connect to the server. Interaction works as expected and is not dependent on the number of clients. You can explain how your app approaches this.                                                                 |             |
 
-## :bookmark: License
+## Auteur
 
-[MIT](https://github.com/lottekoblens/real-time-web-2122/blob/main/LICENSE) --> -->
+Joeri Bouwman
+
+## License
+
+[MIT](https://github.com/joeribouwman25/music-room/blob/main/LICENSE)
