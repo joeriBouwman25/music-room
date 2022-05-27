@@ -45,9 +45,9 @@ Een multiplayer mini game waarbij je als eerste de naam of artiest bij een rando
 
 Om tot één concept te komen ben ik begonnen met het schetsen van meerdere ideeën:
 
-Uit de schetsen haalde ik drie mogelijke concepten:
-
 <img src="/assets/schets 1 + 2.jpeg" alt="schetsen" width="400"/><img src="/assets/schets 3 + 4.jpeg" alt="schetsen" width="400"/><img src="/assets/schets 5 + 6.jpeg" alt="schetsen" width="400"/><img src="/assets/schets 7 + 8.jpeg" alt="schetsen" width="400"/>
+
+Uit de schetsen haalde ik drie mogelijke concepten:
 
 1.  Spotify Roulette, een app waarbij gebruikers gezamelijk naar muziek kunnen luisteren en gestemd kan worden of deze in een gezamelijke afspeellijst toegevoegd moet worden. Voor dit concept wordt de Spotify API gebruikt.
 
