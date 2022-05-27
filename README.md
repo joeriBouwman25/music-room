@@ -40,7 +40,19 @@ Een multiplayer mini game waarbij je als eerste de naam of artiest bij een rando
 
 Om tot één concept te komen ben ik begonnen met het schetsen van meerdere ideeën:
 
-Uit de schetsen haalde ik drie mogelijke concepten
+Uit de schetsen haalde ik drie mogelijke concepten:
+
+1.  Spotify Roulette, een app waarbij gebruikers gezamelijk naar muziek kunnen luisteren en gestemd kan worden of deze in een gezamelijke afspeellijst toegevoegd moet worden. Voor dit concept wordt de Spotify API gebruikt.
+
+2.  Spotify Room, een app waarbij gebruikers de muziek die ze op dat moment luisteren kunnen delen met andere en hier over kunnen chatten, ook is het mogelijk om elkaars favoriete nummers op te slaan. Voor dit concept wordt de Spotify API gebruikt.
+
+3.  Music Room, een app waarbij gebruikers een random albumhoes te zien krijgen waarvan zij of de titel of de artiest van het album moeten raden. Wanneer het antwoord goed is verdient de gebruiker punten. Wanneer een gebruiker een nader te bepalen totaal aantal punten heeft wint diegene het spel.
+
+Uiteindelijk koos ik er voor om met het tweede concept aan de slag te gaan omdat het me interessant leek om een chatroom gebasseerd om Spotify te kunnen bouwen.
+
+Na een hele hoop worstelen met de API bleek wat ik wou helaas niet mogelijk te zijn wegens gebruikers rechten en de functionaliteiten in de API. Daarom heb ik uiteindelijk nog gewisseld naar concept 3: Music Room. (De code van mijn oorspronkelijke concept is nog te bekijken in deze repo: [https://github.com/joeriBouwman25/real-time-web-2122](https://github.com/joeriBouwman25/real-time-web-2122) )
+
+Voor concept 3 was ik oorspronkelijk van plan om ook de Spotify API gebruiken maar heb dit gewisseld naar de Last-FM API omdat hier geen Oauth login vereist was en er geen limiterende gebruikers rechtten aan de API hingen.
 
 ## :floppy_disk: External data source
 
@@ -127,25 +139,48 @@ I could prevent this by, for example, setting a character limit, so that people 
 
 To explain the application in a visual way, I created a data lifecycle. Here you can see what happens on what time of after an event.
 
-<img src="/public/images/dataLifecycle-version2.png" width="650">
+<img src="/public/images/dataLifecycle-version2.png" width="650"> -->
 
 ## :file_folder: Data management
 
-For data management I use arrays. I save the data of the users in one array. It's saved like this:
+Om de data te beheren gebruik ik de array: `users[]`. Per gebruiker wordt er een Object aangemaakt wanneer deze een gebruikersnaam heeft gesubmit, dit Object ziet er als volgt uit:
 
 ```js
-users.push({
+{
   username: username,
   score: 0,
   id: socket.id,
-});
+};
 ```
 
-I also save the data of the movies. I first filter the data of the movies by only getting the movies with English as the original language. I also deleted the properties that I don't use, so I have good cleaned data that I can use.
+Ik heb gebruik de _username_ Key om te checken welke gebruikers er in de game zitten, ik doe dit op naam en niet op het socket.id omdat wanneer een gebruiker de verbinding met de server verliest en daarna weer connect er een nieuw socket verbinding met nieuw id wordt gestart. om te voorkomen dat gebruikers meerdere keren worden toegevoegd of niet hun score geupdate kunnen krijgen check ik dus op naam.
+
+Omdat ik op naam check is het niet mogelijk voor gebruikers om een username te submitten die al in de game zit.
+
+![Gebruikersnaam is al in gebruik](/assets/usernam%20error.png)
+
+`const users` wordt op de volgende momenten vanaf de server naar de client verstuurd om alle gebruikers up to date te houden:
+
+- Wanneer een gebruiker verbinding maakt met de Server
+- Wanneer een gebruiker een gebruikersnaam heeft gesubmit en de game room betreed
+- Wanneer een gebruiker een antwoord goed raadt zodat de score geupdate kan worden
+- Wanneer een gebruiker de connectie met de server verbreekt/verliest
+
+De album data die van de Last-FM API wordt opgehaald wordt _gecleaned_ en in een Object `const album` opgeslagen. Dit Object ziet er als volgt uit:
+
+```js
+const album = {
+  name: randomAlbum.name,
+  artist: randomAlbum.artist.name,
+  cover: randomAlbum.image[3],
+};
+```
+
+De album data wordt verder niet opgeslagen waardoor er een nieuw album wordt vertoond zodra een van de gebruikers zijn/haar pagina refreshed. Dit had ik graag nog willen oplossen door het album in local storage of database op te slaan maar door tijd gebrek zit dit niet in de applicatie.
 
 ## :busts_in_silhouette: Multi-user support
 
-In socket.io you as a user are already assigned a socket ID. Once the user gets to the site, he sets up a nickname. All users then end up in room (there are not multiple rooms). So all users end up in a game together. All users will be notified when a new user is added, all users will receive all messages sent in the chat and all users see the scoreboard. -->
+In socket.io you as a user are already assigned a socket ID. Once the user gets to the site, he sets up a nickname. All users then end up in room (there are not multiple rooms). So all users end up in a game together. All users will be notified when a new user is added, all users will receive all messages sent in the chat and all users see the scoreboard.
 
 ## :globe_with_meridians: Real time events
 
@@ -196,68 +231,66 @@ Het _"pause game"_ event wordt aangeroepen wanneer een gebruiker de room verlaat
 
 ### Chat message
 
-Het _"chat message"_ event wordt aangeroepen wanneer
+Het _"chat message"_ event wordt aangeroepen wanneer een gebruiker een bericht stuurt in de game room, vanaf de client wordt dit event ge-emit naar de server en vervolgens weer van de server naar de client terug zodat elke client het bericht ontvangt.
 
 ### Correct
 
-Het _"correct"_ event wordt aangeroepen wanneer
-
-This event is called when a user sends the right answer in the chat. And the user who gave the right answer will get points which will be displayed on the scoreboard.
+Het _"correct"_ event wordt aangeroepen wanneer een gebruiker een juist album of artiest raadt in de game room, wanneer het event plaats vindt wordt er aan de gebruiker die het antwoord goed had 10 punten opgeteld. Dit event wordt vanaf de server naar de client ge-emit.
 
 ### Wrong
 
-Het _"wrong"_ event wordt aangeroepen wanneer
+Het _"wrong"_ event wordt aangeroepen wanneer een gebruiker een fout antwoord invoerd in de game room. vanaf de server wordt het event ge-emit naar de clients, om zo wanneer het antwoord niet goed is daar feedback op te geven.
+Ook zal het aantal pogingen dat de gebruikers hebben om het antwoord goed te raden met 1 naar beneden gaan.
 
 ### 2/4/6 Mistakes
 
-Het _"2 mistakes"_ event wordt aangeroepen wanneer
+Het _"2 mistakes"_ event wordt aangeroepen wanneer er twee keer een verkeerd antwoord is gegeven in de game room.
+wanneer het event wordt aangeroepen wordt er een functie uitgevoerd om de albumhoes minder blurry te maken zodat deze zichtbaarder wordt voor de gebruiker. Een gelijke functie heb ik ook gemaakt voor bij vier foute antwoorden, _"4 mistakes"_, en bij 6 foute antwoorden _"6 mistakes"_. Wanneer deze events worden aangeroepen zal de albumhoes nog zichtbaarder worden. Bij het _"6 mistakes"_ event zijn de pogingen van de gebruikers op en zal er een nieuwe albumhoes ingeladen worden.
 
-The skip-movie event is called when the user clicks on the button. This adds one to game so that the next movie will be displayed.
+Alle drie deze events worden vanaf de server naar de client ge-emit.
 
 ### Winner
 
-Het _"winner"_ event wordt aangeroepen wanneer
+Het _"winner"_ event wordt aangeroepen wanneer een gebruiker 60 punten heeft verdient, per goed antwoord krijgt een gebruiker 10 punten. nadat het event is uitgevoerd worden alle clients doorgestuurd naar de winner pagina en kan er een nieuw potje gestart worden. Dit event wordt vanaf de server naar de client ge-emit.
 
-### Disconnection
+### Disconnect
 
-Het _"disconnection"_ event wordt aangeroepen wanneer
+Het _"disconnect"_ event wordt aangeroepen wanneer een gebruiker de game verlaat of zijn/haar internet verbinding verliest. De server luisterd dus of een client nog wel verbonden is met de server. Wanneer het event wordt aangeroepen worden de gebruikers geupdate met het _"clients"_ event. Wanneer er minder dan twee gebruikers overblijven na het _"disconnect"_ event zal het _"pause game"_ event worden uitgevoerd.
 
-<!-- ## :heavy_check_mark: Features
+## :heavy_check_mark: Features
 
-- Play a game with other players
-- Set a nickname
-- Send a chat message
-- Get points when answer is guessed
-- Skip a movie
+- Een spel spelen met andere gebruikers
+- Albums/ Artiesten raden
+- Chat berichten versturen
+- Punten verdienen
+- Een gebruikersnaam kiezen
 
-## :wrench: Installation
+## :wrench: Installatie
 
-1. Clone this repository by putting this in your terminal:
+1. Clone de volgende repository door de onderstaande regel in de terminal in te voeren:
 
-`git clone https://github.com/lottekoblens/real-time-web-2122.git`
+`$ git clone https://github.com/joeribouwman25/music-room.git`
 
-2. Install the project by putting in the following in the terminal:
+2. Installeer vervolgens de NPM packages met de regel:
 
-`npm install`
+`$ npm install`
 
-3. Get your API key for the MovieDB API
+3. Verkrijg een API key voor de Last-FM API
 
-   Read how to get one [here](https://kb.synology.com/en-my/DSM/tutorial/How_to_apply_for_a_personal_API_key_to_get_video_info)
+Lees [hier](https://www.last.fm/api/authentication) meer over hoe je een API key verkrijgt
 
-4. Set your API key in the .env file
+4. PLaats je API key en de Port van de server op in een _.env_ bestand
+   Sla de key in het .env bestand als volgt op:
+   `KEY=API_KEY`
 
-   You should do it like this:
-   `KEY=yourAPIkey`
+   Sla de PORT in het .env bestand als volgt op:
+   `PORT="8000"`
 
-5. Add the PORT to the .env file like this:
+5. Start de applicatie op de volgende regel in de terminal:
 
-`PORT="4242"`
+`$ npm start`
 
-6. Run the project by putting this in the terminal:
-
-`npm start`
-
-## :fast_forward: Wishlist
+<!-- ## :fast_forward: Wishlist
 
 Due to a lack of time, there are a few things that I wanted to add but I couldn't now
 
@@ -293,4 +326,4 @@ Your efforts will be graded using a single point rubric (see below). You will ha
 
 ## :bookmark: License
 
-[MIT](https://github.com/lottekoblens/real-time-web-2122/blob/main/LICENSE) -->
+[MIT](https://github.com/lottekoblens/real-time-web-2122/blob/main/LICENSE) --> -->
