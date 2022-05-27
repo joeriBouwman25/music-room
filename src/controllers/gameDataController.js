@@ -15,6 +15,17 @@ export const getAlbumToStartGame = async () => {
   io.emit('new album', album)
 }
 
+export const mistakeCount = (counter) => {
+  if (counter === 4) {
+    io.emit('2 mistakes')
+  } else if (counter === 2) {
+    io.emit('4 mistakes')
+  } else if (counter === 0) {
+    io.emit('6 mistakes')
+    getAlbumToStartGame()
+  }
+}
+
 // let timeLeft = 30
 
 // export const startTimerForGame = async () => {

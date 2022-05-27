@@ -119,7 +119,7 @@ socket.on('4 mistakes', () => {
   albumCover.classList.add('moreVisible')
 })
 
-socket.on('6 mistakes', (counter) => {
+socket.on('6 mistakes', () => {
   const albumCover = document.querySelector('img')
   albumCover.classList.remove('moreVisible')
   albumCover.classList.add('blurry')
@@ -143,6 +143,7 @@ socket.on('chat message', (data) => {
 })
 
 socket.on('correct', (counter) => {
+  console.log(counter)
   if (guessForm) {
     confetti()
     attempts.innerText = counter
