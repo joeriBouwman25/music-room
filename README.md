@@ -2,7 +2,7 @@
 
 Een multiplayer mini game waarbij je als eerste de naam of artiest bij een random albumhoes moet raden
 
-<img src="/assets/main%20screen.png" alt="screenshot van de homepagina" width="600"/>
+<img src="/assets/main%20screen.png" alt="screenshot van de homepagina" width="800"/>
 
 ## Inhoudsopgave
 
@@ -151,7 +151,7 @@ Ik heb gebruik de _username_ Key om te checken welke gebruikers er in de game zi
 
 Omdat ik op naam check is het niet mogelijk voor gebruikers om een username te submitten die al in de game zit.
 
-<img src="/assets/username%20error.png" alt="Gebruikersnaam is al in gebruik" width="400"/>
+<img src="/assets/username%20error.png" alt="Gebruikersnaam is al in gebruik" width="300"/>
 
 `const users` wordt op de volgende momenten vanaf de server naar de client verstuurd om alle gebruikers up to date te houden:
 
