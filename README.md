@@ -136,7 +136,7 @@ export const getAlbumToStartGame = async () => {
 
 <img src="/public/images/datamodelling.png" width="650">
 
-## :file_folder: Data lifecycle
+## Data lifecycle
 
 To explain the application in a visual way, I created a data lifecycle. Here you can see what happens on what time of after an event.
 
